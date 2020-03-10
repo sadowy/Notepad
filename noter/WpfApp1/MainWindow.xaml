@@ -1,12 +1,106 @@
-﻿<Window x:Class="WpfApp1.MainWindow"
+﻿<Window x:Class="Noter.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp1"
+        xmlns:local="clr-namespace:Noter"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="Noter" Height="600" Width="900">
+    <Window.Resources>
+        <Image x:Key="newFileIcon" x:Shared="false" Source="img/new_file.png"
+               Width="16" Height="16" />
+        <Image x:Key="clockIcon" x:Shared="false" Source="img/clock.png"
+               Width="16" Height="16" />
+        <Image x:Key="copyIcon" x:Shared="false" Source="img/copy.png"
+               Width="16" Height="16" />
+        <Image x:Key="deleteIcon" x:Shared="false" Source="img/delete.png"
+               Width="16" Height="16" />
+        <Image x:Key="openIcon" x:Shared="false" Source="img/open.png"
+               Width="16" Height="16" />
+        <Image x:Key="pasteIcon" x:Shared="false" Source="img/paste.png"
+               Width="16" Height="16" />
+        <Image x:Key="redoIcon" x:Shared="false" Source="img/redo.png"
+               Width="16" Height="16" />
+        <Image x:Key="saveIcon" x:Shared="false" Source="img/save.png"
+               Width="16" Height="16" />
+        <Image x:Key="undoIcon" x:Shared="false" Source="img/undo.png"
+               Width="16" Height="16" />
+        <Image x:Key="printIcon" x:Shared="false" Source="img/print.png"
+               Width="16" Height="16" />
+        <Image x:Key="cutIcon" x:Shared="false" Source="img/cut.png"
+               Width="16" Height="16" />
+        <Image x:Key="fontIcon" x:Shared="false" Source="img/font.png"
+               Width="16" Height="16" />
+        <Image x:Key="pipetteIcon" x:Shared="false" Source="img/pipette.png"
+               Width="16" Height="16" />
+        <Image x:Key="quitIcon" x:Shared="false" Source="img/quit.png"
+               Width="16" Height="16" />
+        <Image x:Key="menuIcon" x:Shared="false" Source="img/menu.png"
+               Width="16" Height="16" />
+    </Window.Resources>
+    <DockPanel FocusManager.FocusedElement="{Binding ElementName=textBox}">
+        <Menu x:Name="mainMenu" IsMainMenu="True" DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New" InputGestureText="Ctrl+N" Icon="{StaticResource newFileIcon}"/>
+                <MenuItem Header="_Open" InputGestureText="Ctrl+O" Icon="{StaticResource openIcon}" />
+                <MenuItem Header="_Save" InputGestureText="Ctrl+S" Icon="{StaticResource saveIcon}"/>
+                <MenuItem Header="Save as..." Icon="{StaticResource saveIcon}"/>
+                <Separator />
+                <MenuItem Header="_Print..." InputGestureText="Ctrl+P" Icon="{StaticResource printIcon}"/>
+                <Separator />
+                <MenuItem Header="_Exit" InputGestureText="Alt+F4" Icon="{StaticResource quitIcon}"/>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo" InputGestureText="Ctrl+Z" Icon="{StaticResource undoIcon}"/>
+                <MenuItem Header="_Redo" InputGestureText="Ctrl+Y" Icon="{StaticResource redoIcon}"/>
+                <Separator />
+                <MenuItem Header="C_ut" InputGestureText="Ctrl+X" Icon="{StaticResource cutIcon}"/>
+                <MenuItem Header="_Copy" InputGestureText="Ctrl+C" Icon="{StaticResource copyIcon}"/>
+                <MenuItem Header="Pas_te" InputGestureText="Ctrl+V" Icon="{StaticResource pasteIcon}"/>
+                <MenuItem Header="_Delete" InputGestureText="Del" Icon="{StaticResource deleteIcon}"/>
+                <Separator />
+                <MenuItem Header="Se_lect All" InputGestureText="Ctrl+A" />
+                <MenuItem Header="_Time/Date" InputGestureText="F5" Icon="{StaticResource clockIcon}"/>
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="_Word Wrap" IsCheckable="True" IsChecked="True" />
+                <MenuItem Header="_Font..." Icon="{StaticResource fontIcon}"/>
+                <MenuItem Header="Change The_me..." Icon="{StaticResource pipetteIcon}"/>
+                <Separator />
+                <MenuItem Header="Tool Ba_r" IsCheckable="True" IsChecked="True" />
+                <MenuItem Header="Status _Bar" IsCheckable="True" IsChecked="True" />
+            </MenuItem>
+        </Menu>
+        <ToolBarTray DockPanel.Dock="Top" x:Name="toolBar">
+            <ToolBar>
+                <Button ToolTip="New" Content="{StaticResource newFileIcon}" ToolBar.OverflowMode="AsNeeded" />
+                <Button ToolTip="Open" Content="{StaticResource openIcon}" ToolBar.OverflowMode="AsNeeded" />
+                <Button ToolTip="Save" Content="{StaticResource saveIcon}" ToolBar.OverflowMode="AsNeeded" />
+                <Separator />
+                <Button ToolTip="Print" Content="{StaticResource printIcon}" ToolBar.OverflowMode="AsNeeded" />
+            </ToolBar>
+            <ToolBar>
+                <Button ToolTip="Undo" Content="{StaticResource undoIcon}" ToolBar.OverflowMode="Never" />
+                <Button ToolTip="Redo" Content="{StaticResource redoIcon}" ToolBar.OverflowMode="Never" />
+                <Separator />
+                <Button ToolTip="Cut" Content="{StaticResource cutIcon}" ToolBar.OverflowMode="AsNeeded" />
+                <Button ToolTip="Copy" Content="{StaticResource copyIcon}" ToolBar.OverflowMode="AsNeeded" />
+                <Button ToolTip="Paste" Content="{StaticResource pasteIcon}" ToolBar.OverflowMode="AsNeeded" />
+                <Button ToolTip="Delete" Content="{StaticResource deleteIcon}" ToolBar.OverflowMode="AsNeeded" />
+            </ToolBar>
+            <ToolBar>
+                <Button ToolTip="Font" Content="{StaticResource fontIcon}" ToolBar.OverflowMode="AsNeeded" />
+                <Button ToolTip="Change Theme" Content="{StaticResource pipetteIcon}" ToolBar.OverflowMode="AsNeeded" />
+            </ToolBar>
+        </ToolBarTray>
+        <StatusBar DockPanel.Dock="Bottom"
+                   x:Name="statusBar">
+            <StatusBarItem>
+                <TextBlock x:Name="statusBarText" Text="[Brak pliku]"/>
+            </StatusBarItem>
+        </StatusBar>
+        <TextBox x:Name="textBox" AcceptsReturn="True" TextWrapping="Wrap"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" />
+    </DockPanel>
 </Window>

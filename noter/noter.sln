@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{AA038ACD-54AA-4BAC-A498-0503B08F5934}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Noter", "WpfApp1\Noter.csproj", "{AA038ACD-54AA-4BAC-A498-0503B08F5934}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

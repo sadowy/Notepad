@@ -94,5 +94,22 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\clock.png" />
+    <Resource Include="img\copy.png" />
+    <Resource Include="img\cut.png" />
+    <Resource Include="img\delete.png" />
+    <Resource Include="img\font.png" />
+    <Resource Include="img\menu.png" />
+    <Resource Include="img\new_file.png" />
+    <Resource Include="img\open.png" />
+    <Resource Include="img\paste.png" />
+    <Resource Include="img\pipette.png" />
+    <Resource Include="img\print.png" />
+    <Resource Include="img\quit.png" />
+    <Resource Include="img\redo.png" />
+    <Resource Include="img\save.png" />
+    <Resource Include="img\undo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
