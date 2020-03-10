@@ -1,2 +1,2 @@
-# WPF-note-taking-app
-Simple note-taking app for Windows using WPF and VMMV architecture pattern
+# Notepad
+Simple text editing app similiar to Windows Notepad. Created using WPF and MVVM architecture pattern
