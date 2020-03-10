@@ -1,2 +1,2 @@
 # Notepad
-Simple text editing app similiar to Window's Notepad. Created using WPF and MVVM architecture pattern
+Simple text editing app similiar to Windows Notepad. Created using WPF and MVVM architecture pattern
