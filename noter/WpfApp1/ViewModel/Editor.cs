@@ -9,15 +9,20 @@ namespace Noter.ViewModel
     using Model;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Windows.Input;
 
     public class Editor : INotifyPropertyChanged
     {
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void onPropertyChanged([CallerMemberName]string propertyName = "")
+        public void onPropertyChanged(params string[] propertiesNames)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+                foreach (var propertyName in propertiesNames)
+                {
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                }
         }
         #endregion
         private Text text = new Text();
@@ -38,5 +43,82 @@ namespace Noter.ViewModel
             }
         }
 
+        #region File handling
+        public string FilePath { get; set; }
+        private ICommand _new;
+        public ICommand New
+        {
+            get
+            {
+                if (_new == null)
+                    _new = new RelayCommand(
+                        (object param) =>
+                        {
+                            text.clear();
+                            FilePath = null;
+                            onPropertyChanged(nameof(Text), nameof(FilePath));
+                        }, (object param) =>
+                        {
+                            return Text.Length != 0;
+                        });
+                return _new;
+            }
+        }
+
+        private ICommand readTextFromFile;
+        public ICommand ReadTextFromFile
+        {
+            get
+            {
+                if (readTextFromFile == null)
+                    readTextFromFile = new RelayCommand(
+                        (object param) =>
+                        {
+                            try
+                            {
+                                if (!(param is string))
+                                    throw new Exception("Invalid command parameter type");
+                                string filePath = (string)param;
+                                text.readFromFile(filePath);
+                                FilePath = filePath;
+                                onPropertyChanged(nameof(FilePath), nameof(Text));
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Exception("Error reading text from file", ex);
+                            }
+                        });
+                return readTextFromFile;
+            }
+        }
+
+        private ICommand saveTextToFile;
+        public ICommand SaveTextToFile
+        {
+            get
+            {
+                if (saveTextToFile == null)
+                    saveTextToFile = new RelayCommand(
+                        (object param) =>
+                        {
+                            try
+                            {
+                                if (!(param is string))
+                                    throw new Exception("Invalid command parameter type");
+                                string filePath = (string)param;
+                                FilePath = filePath;
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Exception("Error saving text to file", ex);
+                            }
+                        }, (object param) =>
+                         {
+                             return (param != null && param is string) || FilePath != null;
+                         });
+                return saveTextToFile;
+            }
+        }
+        #endregion
     }
 }
