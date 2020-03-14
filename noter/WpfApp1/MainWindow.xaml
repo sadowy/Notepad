@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Noter.ViewModel"
         xmlns:local="clr-namespace:Noter"
         mc:Ignorable="d"
         Title="Noter" Height="600" Width="900">
@@ -37,8 +38,9 @@
                Width="16" Height="16" />
         <Image x:Key="menuIcon" x:Shared="false" Source="img/menu.png"
                Width="16" Height="16" />
+        <vm:Editor x:Key="viewModel" />
     </Window.Resources>
-    <DockPanel FocusManager.FocusedElement="{Binding ElementName=textBox}">
+    <DockPanel FocusManager.FocusedElement="{Binding ElementName=textBox}" DataContext="{StaticResource viewModel}">
         <Menu x:Name="mainMenu" IsMainMenu="True" DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New" InputGestureText="Ctrl+N" Icon="{StaticResource newFileIcon}"/>
@@ -101,6 +103,7 @@
         </StatusBar>
         <TextBox x:Name="textBox" AcceptsReturn="True" TextWrapping="Wrap"
                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
     </DockPanel>
 </Window>
