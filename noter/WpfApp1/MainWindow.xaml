@@ -43,7 +43,7 @@
     <DockPanel FocusManager.FocusedElement="{Binding ElementName=textBox}" DataContext="{StaticResource viewModel}">
         <Menu x:Name="mainMenu" IsMainMenu="True" DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_New" InputGestureText="Ctrl+N" Icon="{StaticResource newFileIcon}"/>
+                <MenuItem Header="_New" InputGestureText="Ctrl+N" Icon="{StaticResource newFileIcon}" Command="{Binding New}"/>
                 <MenuItem Header="_Open" InputGestureText="Ctrl+O" Icon="{StaticResource openIcon}" />
                 <MenuItem Header="_Save" InputGestureText="Ctrl+S" Icon="{StaticResource saveIcon}"/>
                 <MenuItem Header="Save as..." Icon="{StaticResource saveIcon}"/>
@@ -75,7 +75,7 @@
         </Menu>
         <ToolBarTray DockPanel.Dock="Top" x:Name="toolBar">
             <ToolBar>
-                <Button ToolTip="New" Content="{StaticResource newFileIcon}" ToolBar.OverflowMode="AsNeeded" />
+                <Button ToolTip="New" Content="{StaticResource newFileIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding New}"/>
                 <Button ToolTip="Open" Content="{StaticResource openIcon}" ToolBar.OverflowMode="AsNeeded" />
                 <Button ToolTip="Save" Content="{StaticResource saveIcon}" ToolBar.OverflowMode="AsNeeded" />
                 <Separator />
@@ -98,7 +98,7 @@
         <StatusBar DockPanel.Dock="Bottom"
                    x:Name="statusBar">
             <StatusBarItem>
-                <TextBlock x:Name="statusBarText" Text="[Brak pliku]"/>
+                <TextBlock x:Name="statusBarText" Text="{Binding Path=FilePath, Mode=OneWay}"/>
             </StatusBarItem>
         </StatusBar>
         <TextBox x:Name="textBox" AcceptsReturn="True" TextWrapping="Wrap"
