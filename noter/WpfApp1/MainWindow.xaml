@@ -41,11 +41,21 @@
         <vm:Editor x:Key="viewModel" />
     </Window.Resources>
     <DockPanel FocusManager.FocusedElement="{Binding ElementName=textBox}" DataContext="{StaticResource viewModel}">
+        <local:OpenFileDialog x:Name="openFileDialog" 
+                              Caption="Read from text file" 
+                              Filter="Text files (*.txt)|*.txt|All files (*.*)|*.*"
+                              FilterIndex="0" DefaultExtension="txt"
+                              CommandFileOk="{Binding ReadTextFromFile}"/>
+        <local:SaveFileDialog x:Name="saveFileDialog"
+                              Caption="Save text to file"
+                              Filter="Text files (*.txt)|*.txt|Wszystkie pliki (*.*)|*.*"
+                              FilterIndex="0" DefaultExtension="txt"
+                              CommandFileOk="{Binding SaveTextToFile}" />
         <Menu x:Name="mainMenu" IsMainMenu="True" DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New" InputGestureText="Ctrl+N" Icon="{StaticResource newFileIcon}" Command="{Binding New}"/>
-                <MenuItem Header="_Open" InputGestureText="Ctrl+O" Icon="{StaticResource openIcon}" />
-                <MenuItem Header="_Save" InputGestureText="Ctrl+S" Icon="{StaticResource saveIcon}"/>
+                <MenuItem Header="_Open" InputGestureText="Ctrl+O" Icon="{StaticResource openIcon}" Command="{Binding ElementName=openFileDialog, Path=Show}"/>
+                <MenuItem Header="_Save" InputGestureText="Ctrl+S" Icon="{StaticResource saveIcon}" Command="{Binding ElementName=saveFileDialog, Path=Show}"/>
                 <MenuItem Header="Save as..." Icon="{StaticResource saveIcon}"/>
                 <Separator />
                 <MenuItem Header="_Print..." InputGestureText="Ctrl+P" Icon="{StaticResource printIcon}"/>
@@ -76,8 +86,8 @@
         <ToolBarTray DockPanel.Dock="Top" x:Name="toolBar">
             <ToolBar>
                 <Button ToolTip="New" Content="{StaticResource newFileIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding New}"/>
-                <Button ToolTip="Open" Content="{StaticResource openIcon}" ToolBar.OverflowMode="AsNeeded" />
-                <Button ToolTip="Save" Content="{StaticResource saveIcon}" ToolBar.OverflowMode="AsNeeded" />
+                <Button ToolTip="Open" Content="{StaticResource openIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding ElementName=openFileDialog, Path=Show}"/>
+                <Button ToolTip="Save" Content="{StaticResource saveIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding ElementName=saveFileDialog, Path=Show}"/>
                 <Separator />
                 <Button ToolTip="Print" Content="{StaticResource printIcon}" ToolBar.OverflowMode="AsNeeded" />
             </ToolBar>

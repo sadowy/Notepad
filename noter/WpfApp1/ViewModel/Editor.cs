@@ -44,8 +44,7 @@ namespace Noter.ViewModel
         }
 
         #region File handling
-        public string FilePath { get; set; }
-        private ICommand _new;
+        public string FilePath { get; set; } = string.Empty;
         public ICommand New
         {
             get
@@ -64,8 +63,6 @@ namespace Noter.ViewModel
                 return _new;
             }
         }
-
-        private ICommand readTextFromFile;
         public ICommand ReadTextFromFile
         {
             get
@@ -91,8 +88,6 @@ namespace Noter.ViewModel
                 return readTextFromFile;
             }
         }
-
-        private ICommand saveTextToFile;
         public ICommand SaveTextToFile
         {
             get
@@ -103,22 +98,31 @@ namespace Noter.ViewModel
                         {
                             try
                             {
-                                if (!(param is string))
-                                    throw new Exception("Invalid command parameter type");
-                                string filePath = (string)param;
-                                FilePath = filePath;
-                            }
-                            catch (Exception ex)
+                                if(param != null)
+                                {
+                                    if (!(param is string))
+                                        throw new Exception("Invalid command parameter type");
+                                    string filePath = (string)param;
+                                    FilePath = filePath;
+                                }
+                                text.saveToFile(FilePath);
+                                onPropertyChanged(nameof(FilePath));
+                            }catch(Exception ex)
                             {
-                                throw new Exception("Error saving text to file", ex);
+                                throw new Exception("Error saving to file", ex);
                             }
-                        }, (object param) =>
-                         {
-                             return (param != null && param is string) || FilePath != null;
-                         });
+                        },
+                        (object param) =>
+                        {
+                            return (param != null && param is string) || FilePath != null;
+                        });
                 return saveTextToFile;
             }
         }
+
+        private ICommand _new;
+        private ICommand readTextFromFile;
+        private ICommand saveTextToFile;
         #endregion
     }
 }

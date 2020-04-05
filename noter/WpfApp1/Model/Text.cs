@@ -8,7 +8,6 @@ namespace Noter.Model
 {
     class Text
     {
-        private List<string> paragraphs = new List<string>();
         public string[] Paragraphs
         {
             get
@@ -21,6 +20,8 @@ namespace Noter.Model
                 paragraphs.AddRange(value);
             }
         }
+
+        private List<string> paragraphs = new List<string>();
 
         public void readFromFile(string filePath)
         {
