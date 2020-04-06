@@ -44,7 +44,7 @@ namespace Noter.ViewModel
         }
 
         #region File handling
-        public string FilePath { get; set; } = string.Empty;
+        public string FilePath { get; set; }
         public ICommand New
         {
             get

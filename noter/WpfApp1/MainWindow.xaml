@@ -39,6 +39,8 @@
         <Image x:Key="menuIcon" x:Shared="false" Source="img/menu.png"
                Width="16" Height="16" />
         <vm:Editor x:Key="viewModel" />
+        <local:BooleanToTexWrappingConverter x:Key="booleanToTextWrappingConverter" />
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
     </Window.Resources>
     <DockPanel FocusManager.FocusedElement="{Binding ElementName=textBox}" DataContext="{StaticResource viewModel}">
         <local:OpenFileDialog x:Name="openFileDialog" 
@@ -55,8 +57,8 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_New" InputGestureText="Ctrl+N" Icon="{StaticResource newFileIcon}" Command="{Binding New}"/>
                 <MenuItem Header="_Open" InputGestureText="Ctrl+O" Icon="{StaticResource openIcon}" Command="{Binding ElementName=openFileDialog, Path=Show}"/>
-                <MenuItem Header="_Save" InputGestureText="Ctrl+S" Icon="{StaticResource saveIcon}" Command="{Binding ElementName=saveFileDialog, Path=Show}"/>
-                <MenuItem Header="Save as..." Icon="{StaticResource saveIcon}"/>
+                <MenuItem Header="_Save" InputGestureText="Ctrl+S" Icon="{StaticResource saveIcon}" Command="{Binding SaveTextToFile}"/>
+                <MenuItem Header="Save as..." Icon="{StaticResource saveIcon}" Command="{Binding ElementName=saveFileDialog, Path=Show}"/>
                 <Separator />
                 <MenuItem Header="_Print..." InputGestureText="Ctrl+P" Icon="{StaticResource printIcon}"/>
                 <Separator />
@@ -75,15 +77,16 @@
                 <MenuItem Header="_Time/Date" InputGestureText="F5" Icon="{StaticResource clockIcon}"/>
             </MenuItem>
             <MenuItem Header="_View">
-                <MenuItem Header="_Word Wrap" IsCheckable="True" IsChecked="True" />
-                <MenuItem Header="_Font..." Icon="{StaticResource fontIcon}"/>
+                <MenuItem x:Name="menuTextWrap" Header="_Text Wrap" IsCheckable="True" IsChecked="True" />
+                <MenuItem Header="_Font..." Icon="{StaticResource fontIcon}" />
                 <MenuItem Header="Change The_me..." Icon="{StaticResource pipetteIcon}"/>
                 <Separator />
-                <MenuItem Header="Tool Ba_r" IsCheckable="True" IsChecked="True" />
-                <MenuItem Header="Status _Bar" IsCheckable="True" IsChecked="True" />
+                <MenuItem x:Name="menuToolBarVisibility" Header="Tool Ba_r" IsCheckable="True" IsChecked="True" />
+                <MenuItem x:Name="menuStatusBarVisibility" Header="Status _Bar" IsCheckable="True" IsChecked="True" />
             </MenuItem>
         </Menu>
-        <ToolBarTray DockPanel.Dock="Top" x:Name="toolBar">
+        <ToolBarTray DockPanel.Dock="Top" x:Name="toolBar"
+                     Visibility="{Binding ElementName=menuToolBarVisibility, Path=IsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
             <ToolBar>
                 <Button ToolTip="New" Content="{StaticResource newFileIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding New}"/>
                 <Button ToolTip="Open" Content="{StaticResource openIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding ElementName=openFileDialog, Path=Show}"/>
@@ -108,10 +111,12 @@
         <StatusBar DockPanel.Dock="Bottom"
                    x:Name="statusBar">
             <StatusBarItem>
-                <TextBlock x:Name="statusBarText" Text="{Binding Path=FilePath, Mode=OneWay}"/>
+                <TextBlock x:Name="statusBarText" 
+                           Text="{Binding Path=FilePath, Mode=OneWay}"
+                           Visibility="{Binding ElementName=menuStatusBarVisibility, Path=IsChecked, Converter={StaticResource booleanToVisibilityConverter}}"/>
             </StatusBarItem>
         </StatusBar>
-        <TextBox x:Name="textBox" AcceptsReturn="True" TextWrapping="Wrap"
+        <TextBox x:Name="textBox" AcceptsReturn="True" TextWrapping="{Binding ElementName=menuTextWrap, Path=IsChecked, Converter={StaticResource booleanToTextWrappingConverter}}"
                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

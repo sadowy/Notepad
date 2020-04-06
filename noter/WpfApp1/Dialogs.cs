@@ -11,9 +11,15 @@ using System.Windows.Input;
 namespace Noter
 {
     using ViewModel;
-    public abstract class FileDialogBox : FrameworkElement, INotifyPropertyChanged
+    public abstract class DialogBox : FrameworkElement, INotifyPropertyChanged
     {
-        public bool? FileDialogResult { get; protected set; }
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void NotifyPropertyChanged([CallerMemberName]string propName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+        }
+        #endregion
         public ICommand Show
         {
             get
@@ -21,17 +27,6 @@ namespace Noter
                 if (show == null)
                     show = new RelayCommand(execute);
                 return show;
-            }
-        }
-        public ICommand CommandFileOk
-        {
-            get
-            {
-                return (ICommand)GetValue(commandFileOkProperty);
-            }
-            set
-            {
-                SetValue(commandFileOkProperty, value);
             }
         }
         public string Caption
@@ -45,10 +40,27 @@ namespace Noter
                 SetValue(captionProperty, value);
             }
         }
-        public object CommandParameter
+        
+        
+        protected ICommand show;
+        protected Action<object> execute = null;
+        protected static readonly DependencyProperty captionProperty =
+            DependencyProperty.Register(nameof(Caption), typeof(string), typeof(FileDialogBox));
+    }
+
+    public abstract class FileDialogBox : DialogBox
+    {
+        public bool? FileDialogResult { get; protected set; }
+        public ICommand CommandFileOk
         {
-            get { return GetValue(commandParameterProperty); }
-            set { SetValue(commandParameterProperty, value); }
+            get
+            {
+                return (ICommand)GetValue(commandFileOkProperty);
+            }
+            set
+            {
+                SetValue(commandFileOkProperty, value);
+            }
         }
         public string FilePath
         {
@@ -70,23 +82,14 @@ namespace Noter
             get { return (string)GetValue(defaultExtensionProperty); }
             set { SetValue(defaultExtensionProperty, value); }
         }
-
-        protected Action<object> execute = null;
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void NotifyPropertyChanged([CallerMemberName]string propName = "")
+        public object CommandParameter
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+            get { return GetValue(commandParameterProperty); }
+            set { SetValue(commandParameterProperty, value); }
         }
-        #endregion
-        protected ICommand show;
 
         protected Microsoft.Win32.FileDialog fileDialog = null;
 
-        protected static readonly DependencyProperty captionProperty = 
-            DependencyProperty.Register(nameof(Caption), typeof(string), typeof(FileDialogBox));
-        public static DependencyProperty commandParameterProperty = 
-            DependencyProperty.Register(nameof(CommandParameter), typeof(object), typeof(FileDialogBox));
         protected static readonly DependencyProperty filePathProperty =
             DependencyProperty.Register(nameof(FilePath), typeof(string), typeof(FileDialogBox));
         protected static readonly DependencyProperty filterProperty =
@@ -97,6 +100,8 @@ namespace Noter
             DependencyProperty.Register(nameof(DefaultExtension), typeof(string), typeof(FileDialogBox));
         protected static readonly DependencyProperty commandFileOkProperty =
             DependencyProperty.Register(nameof(CommandFileOk), typeof(ICommand), typeof(FileDialogBox));
+        protected static DependencyProperty commandParameterProperty =
+            DependencyProperty.Register(nameof(CommandParameter), typeof(object), typeof(FileDialogBox));
 
         public FileDialogBox()
         {
@@ -146,5 +151,5 @@ namespace Noter
         {
             fileDialog = new Microsoft.Win32.SaveFileDialog();
         }
-    }
+    }   
 }
