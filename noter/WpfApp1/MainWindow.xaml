@@ -68,13 +68,13 @@
                 <MenuItem Header="_Undo" InputGestureText="Ctrl+Z" Icon="{StaticResource undoIcon}"/>
                 <MenuItem Header="_Redo" InputGestureText="Ctrl+Y" Icon="{StaticResource redoIcon}"/>
                 <Separator />
-                <MenuItem Header="C_ut" InputGestureText="Ctrl+X" Icon="{StaticResource cutIcon}"/>
-                <MenuItem Header="_Copy" InputGestureText="Ctrl+C" Icon="{StaticResource copyIcon}"/>
-                <MenuItem Header="Pas_te" InputGestureText="Ctrl+V" Icon="{StaticResource pasteIcon}"/>
-                <MenuItem Header="_Delete" InputGestureText="Del" Icon="{StaticResource deleteIcon}"/>
+                <MenuItem Header="C_ut" InputGestureText="Ctrl+X" Icon="{StaticResource cutIcon}" Command="{Binding CutSelectedText}"/>
+                <MenuItem Header="_Copy" InputGestureText="Ctrl+C" Icon="{StaticResource copyIcon}" Command="{Binding CopySelectedText}"/>
+                <MenuItem Header="Pas_te" InputGestureText="Ctrl+V" Icon="{StaticResource pasteIcon}" Command="{Binding PasteTextFromClipboard}"/>
+                <MenuItem Header="_Delete" InputGestureText="Del" Icon="{StaticResource deleteIcon}" Command="{Binding DeleteSelectedText}"/>
                 <Separator />
-                <MenuItem Header="Se_lect All" InputGestureText="Ctrl+A" />
-                <MenuItem Header="_Time/Date" InputGestureText="F5" Icon="{StaticResource clockIcon}"/>
+                <MenuItem Header="Se_lect All" InputGestureText="Ctrl+A"  Command="{Binding SelectAll}"/>
+                <MenuItem Header="_Time/Date" InputGestureText="F5" Icon="{StaticResource clockIcon}" Command="{Binding InsertDateTime}"/>
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem x:Name="menuTextWrap" Header="_Text Wrap" IsCheckable="True" IsChecked="True" />
@@ -98,10 +98,10 @@
                 <Button ToolTip="Undo" Content="{StaticResource undoIcon}" ToolBar.OverflowMode="Never" />
                 <Button ToolTip="Redo" Content="{StaticResource redoIcon}" ToolBar.OverflowMode="Never" />
                 <Separator />
-                <Button ToolTip="Cut" Content="{StaticResource cutIcon}" ToolBar.OverflowMode="AsNeeded" />
-                <Button ToolTip="Copy" Content="{StaticResource copyIcon}" ToolBar.OverflowMode="AsNeeded" />
-                <Button ToolTip="Paste" Content="{StaticResource pasteIcon}" ToolBar.OverflowMode="AsNeeded" />
-                <Button ToolTip="Delete" Content="{StaticResource deleteIcon}" ToolBar.OverflowMode="AsNeeded" />
+                <Button ToolTip="Cut" Content="{StaticResource cutIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding CutSelectedText}" />
+                <Button ToolTip="Copy" Content="{StaticResource copyIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding CopySelectedText}" />
+                <Button ToolTip="Paste" Content="{StaticResource pasteIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding PasteTextFromClipboard}" />
+                <Button ToolTip="Delete" Content="{StaticResource deleteIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding DeleteSelectedText}" />
             </ToolBar>
             <ToolBar>
                 <Button ToolTip="Font" Content="{StaticResource fontIcon}" ToolBar.OverflowMode="AsNeeded" />
@@ -116,9 +116,14 @@
                            Visibility="{Binding ElementName=menuStatusBarVisibility, Path=IsChecked, Converter={StaticResource booleanToVisibilityConverter}}"/>
             </StatusBarItem>
         </StatusBar>
-        <TextBox x:Name="textBox" AcceptsReturn="True" TextWrapping="{Binding ElementName=menuTextWrap, Path=IsChecked, Converter={StaticResource booleanToTextWrappingConverter}}"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <local:SelectionTextBox x:Name="textBox" 
+                                AcceptsReturn="True" 
+                                TextWrapping="{Binding ElementName=menuTextWrap, Path=IsChecked, Converter={StaticResource booleanToTextWrappingConverter}}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedTextDP="{Binding Path=SelectedText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectionStartDP="{Binding Path=TextSelectionStart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectionLengthDP="{Binding Path=TextSelectionLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
     </DockPanel>
 </Window>

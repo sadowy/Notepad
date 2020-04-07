@@ -9,6 +9,7 @@ namespace Noter.ViewModel
     using Model;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Windows;
     using System.Windows.Input;
 
     public class Editor : INotifyPropertyChanged
@@ -16,13 +17,9 @@ namespace Noter.ViewModel
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void onPropertyChanged(params string[] propertiesNames)
+        public void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                foreach (var propertyName in propertiesNames)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                }
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
         private Text text = new Text();
@@ -39,7 +36,7 @@ namespace Noter.ViewModel
             set
             {
                 text.Paragraphs = value.Split('\n');
-                onPropertyChanged();
+                OnPropertyChanged(Text);
             }
         }
 
@@ -54,8 +51,9 @@ namespace Noter.ViewModel
                         (object param) =>
                         {
                             text.clear();
+                            OnPropertyChanged(nameof(Text));
                             FilePath = null;
-                            onPropertyChanged(nameof(Text), nameof(FilePath));
+                            OnPropertyChanged(nameof(FilePath));
                         }, (object param) =>
                         {
                             return Text.Length != 0;
@@ -77,8 +75,9 @@ namespace Noter.ViewModel
                                     throw new Exception("Invalid command parameter type");
                                 string filePath = (string)param;
                                 text.readFromFile(filePath);
+                                OnPropertyChanged(nameof(Text));
                                 FilePath = filePath;
-                                onPropertyChanged(nameof(FilePath), nameof(Text));
+                                OnPropertyChanged(nameof(FilePath));
                             }
                             catch (Exception ex)
                             {
@@ -106,7 +105,7 @@ namespace Noter.ViewModel
                                     FilePath = filePath;
                                 }
                                 text.saveToFile(FilePath);
-                                onPropertyChanged(nameof(FilePath));
+                                OnPropertyChanged(nameof(FilePath));
                             }catch(Exception ex)
                             {
                                 throw new Exception("Error saving to file", ex);
@@ -123,6 +122,143 @@ namespace Noter.ViewModel
         private ICommand _new;
         private ICommand readTextFromFile;
         private ICommand saveTextToFile;
+        #endregion
+        #region Editing
+        public int TextSelectionStart { get; set; }
+        public int TextSelectionLength { get; set; }
+        public string SelectedText { get; set; }
+        
+        
+        public ICommand CopySelectedText
+        {
+            get
+            {
+                if (copySelectedText == null)
+                    copySelectedText = new RelayCommand(
+                        (object param) =>
+                        {
+                            copyDeleteSelectedTex(true, false);
+                        },
+                        (object param) =>
+                        {
+                            return TextSelectionLength > 0;
+                        });
+                return copySelectedText;
+            }
+        }
+        public ICommand CutSelectedText
+        {
+            get
+            {
+                if (cutSelectedText == null)
+                    cutSelectedText = new RelayCommand(
+                        (object param) =>
+                        {
+                            copyDeleteSelectedTex(true, true);
+                        },
+                        (object param) =>
+                        {
+                            return TextSelectionLength > 0;
+                        });
+                return cutSelectedText;
+            }
+        }
+        public ICommand DeleteSelectedText
+        {
+            get
+            {
+                if (deleteSelectedText == null)
+                    deleteSelectedText = new RelayCommand(
+                        (object param) =>
+                        {
+                            copyDeleteSelectedTex(false, true);
+                        },
+                        (object param) =>
+                        {
+                            return TextSelectionLength > 0;
+                        });
+                return deleteSelectedText;
+            }
+        }
+        public ICommand PasteTextFromClipboard
+        {
+            get
+            {
+                if (pasteTextFromClipboard == null)
+                    pasteTextFromClipboard = new RelayCommand(
+                        (object param) =>
+                        {
+                            pasteText();
+                        },
+                        (object param) =>
+                        {
+                            return Clipboard.ContainsText();
+                        });
+                return pasteTextFromClipboard;
+            }
+        }
+        public ICommand InsertDateTime
+        {
+            get
+            {
+                if (insertDateTime == null)
+                    insertDateTime = new RelayCommand(
+                        (object param) =>
+                        {
+                            pasteText(DateTime.Now.ToString());
+                        });
+                return insertDateTime;
+            }
+        }
+        public ICommand SelectAll
+        {
+            get
+            {
+                if (selectAll == null)
+                    selectAll = new RelayCommand(
+                        (object param) =>
+                        {
+                            TextSelectionStart = 0;
+                            OnPropertyChanged(nameof(TextSelectionStart));
+                            TextSelectionLength = Text.Length;
+                            OnPropertyChanged(nameof(TextSelectionLength));
+                        },
+                        (object param) =>
+                        {
+                            return SelectedText != Text;
+                        });
+                return selectAll;
+            }
+        }
+
+        private ICommand copySelectedText;
+        private ICommand cutSelectedText;
+        private ICommand deleteSelectedText;
+        private ICommand pasteTextFromClipboard;
+        private ICommand insertDateTime;
+        private ICommand selectAll;
+        private void copyDeleteSelectedTex(bool copy, bool delete)
+        {
+            if (copy) Clipboard.SetText(SelectedText);
+            if (delete)
+                Text = Text.Substring(0, TextSelectionStart) +
+                    Text.Substring(TextSelectionStart + TextSelectionLength);
+
+            OnPropertyChanged(nameof(Text));
+        }
+        private void pasteText(string textToPaste = null)
+        {
+            if (textToPaste == null) 
+                textToPaste = Clipboard.GetText();
+
+            Text = Text.Substring(0, TextSelectionStart) + 
+                textToPaste +
+                Text.Substring(TextSelectionStart + TextSelectionLength);
+            OnPropertyChanged(nameof(Text));
+
+            TextSelectionStart = Text.Length;
+            OnPropertyChanged(nameof(TextSelectionStart));
+        }
         #endregion
     }
 }
