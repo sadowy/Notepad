@@ -22,8 +22,6 @@ namespace Noter.ViewModel
             PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-        private Text text = new Text();
-
         public string Text
         {
             get
@@ -35,11 +33,13 @@ namespace Noter.ViewModel
             }
             set
             {
+                undoStack.Push(text.Clone());
                 text.Paragraphs = value.Split('\n');
                 OnPropertyChanged(Text);
             }
         }
-
+        private Text text = new Text();
+        
         #region File handling
         public string FilePath { get; set; }
         public ICommand New
@@ -50,7 +50,7 @@ namespace Noter.ViewModel
                     _new = new RelayCommand(
                         (object param) =>
                         {
-                            text.clear();
+                            text.Clear();
                             OnPropertyChanged(nameof(Text));
                             FilePath = null;
                             OnPropertyChanged(nameof(FilePath));
@@ -74,8 +74,12 @@ namespace Noter.ViewModel
                                 if (!(param is string))
                                     throw new Exception("Invalid command parameter type");
                                 string filePath = (string)param;
-                                text.readFromFile(filePath);
+                                
+                                text.ReadFromFile(filePath);
+                                redoStack.Clear();
+                                undoStack.Clear();
                                 OnPropertyChanged(nameof(Text));
+
                                 FilePath = filePath;
                                 OnPropertyChanged(nameof(FilePath));
                             }
@@ -104,7 +108,9 @@ namespace Noter.ViewModel
                                     string filePath = (string)param;
                                     FilePath = filePath;
                                 }
-                                text.saveToFile(FilePath);
+                                text.SaveToFile(FilePath);
+                                redoStack.Clear();
+                                undoStack.Clear();
                                 OnPropertyChanged(nameof(FilePath));
                             }catch(Exception ex)
                             {
@@ -259,6 +265,55 @@ namespace Noter.ViewModel
             TextSelectionStart = Text.Length;
             OnPropertyChanged(nameof(TextSelectionStart));
         }
+        #endregion
+        #region Undo/Redo
+        public ICommand Undo
+        {
+            get
+            {
+                if (undo == null)
+                    undo = new RelayCommand(
+                        (object param) =>
+                        {
+                            redoStack.Push(text.Clone());
+                            text = undoStack.Pop();
+                            OnPropertyChanged(nameof(Text));
+                            TextSelectionStart = Text.Length;
+                            OnPropertyChanged(nameof(TextSelectionStart));
+                        },
+                        (object param) =>
+                        {
+                            return undoStack.Count > 0;
+                        });
+                return undo;
+            }
+        }
+        public ICommand Redo
+        {
+            get
+            {
+                if (redo == null)
+                    redo = new RelayCommand(
+                        (object param) =>
+                        {
+                            undoStack.Push(text.Clone());
+                            text = redoStack.Pop();
+                            OnPropertyChanged(nameof(Text));
+                            TextSelectionStart = Text.Length;
+                            OnPropertyChanged(nameof(TextSelectionStart));
+                        },
+                        (object param) =>
+                        {
+                            return redoStack.Count > 0;
+                        });
+                return redo;
+            }
+        }
+
+        private ICommand redo;
+        private ICommand undo;
+        private Stack<Text> redoStack = new Stack<Text>();
+        private Stack<Text> undoStack = new Stack<Text>();
         #endregion
     }
 }

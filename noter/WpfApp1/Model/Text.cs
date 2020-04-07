@@ -23,21 +23,21 @@ namespace Noter.Model
 
         private List<string> paragraphs = new List<string>();
 
-        public void readFromFile(string filePath)
+        public void ReadFromFile(string filePath)
         {
             string[] rows = System.IO.File.ReadAllLines(filePath);
             paragraphs.Clear();
             paragraphs.AddRange(rows);
         }
-        public void saveToFile(string filePath)
+        public void SaveToFile(string filePath)
         {
             System.IO.File.WriteAllLines(filePath, Paragraphs, Encoding.Default);
         }
-        public void clear()
+        public void Clear()
         {
             paragraphs.Clear();
         }
-        public Text clone()
+        public Text Clone()
         {
             List<string> _paragraphs = new List<string>();
             foreach (var paragraph in Paragraphs)

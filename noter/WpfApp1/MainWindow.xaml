@@ -43,6 +43,16 @@
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
     </Window.Resources>
     <DockPanel FocusManager.FocusedElement="{Binding ElementName=textBox}" DataContext="{StaticResource viewModel}">
+        <DockPanel.InputBindings>
+            <KeyBinding Key="Y" Modifiers="Ctrl" Command="{Binding Redo}" />
+            <KeyBinding Key="Z" Modifiers="Ctrl" Command="{Binding Undo}" />
+            <KeyBinding Key="X" Modifiers="Ctrl" Command="{Binding CutSelectedText}" />
+            <KeyBinding Key="C" Modifiers="Ctrl" Command="{Binding CopySelectedText}" />
+            <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteTextFromClipboard}" />
+            <KeyBinding Key="Delete" Command="{Binding DeleteSelectedText}" />
+            <KeyBinding Key="Delete" Command="{Binding DeleteSelectedText}" />
+            <KeyBinding Key="Delete" Command="{Binding DeleteSelectedText}" />
+        </DockPanel.InputBindings>
         <local:OpenFileDialog x:Name="openFileDialog" 
                               Caption="Read from text file" 
                               Filter="Text files (*.txt)|*.txt|All files (*.*)|*.*"
@@ -65,8 +75,8 @@
                 <MenuItem Header="_Exit" InputGestureText="Alt+F4" Icon="{StaticResource quitIcon}"/>
             </MenuItem>
             <MenuItem Header="_Edit">
-                <MenuItem Header="_Undo" InputGestureText="Ctrl+Z" Icon="{StaticResource undoIcon}"/>
-                <MenuItem Header="_Redo" InputGestureText="Ctrl+Y" Icon="{StaticResource redoIcon}"/>
+                <MenuItem Header="_Undo" InputGestureText="Ctrl+Z" Icon="{StaticResource undoIcon}" Command="{Binding Undo}"/>
+                <MenuItem Header="_Redo" InputGestureText="Ctrl+Y" Icon="{StaticResource redoIcon}" Command="{Binding Redo}"/>
                 <Separator />
                 <MenuItem Header="C_ut" InputGestureText="Ctrl+X" Icon="{StaticResource cutIcon}" Command="{Binding CutSelectedText}"/>
                 <MenuItem Header="_Copy" InputGestureText="Ctrl+C" Icon="{StaticResource copyIcon}" Command="{Binding CopySelectedText}"/>
@@ -96,7 +106,7 @@
             </ToolBar>
             <ToolBar>
                 <Button ToolTip="Undo" Content="{StaticResource undoIcon}" ToolBar.OverflowMode="Never" />
-                <Button ToolTip="Redo" Content="{StaticResource redoIcon}" ToolBar.OverflowMode="Never" />
+                <Button ToolTip="Redo" Content="{StaticResource redoIcon}" ToolBar.OverflowMode="Never" Command="{Binding Redo}"/>
                 <Separator />
                 <Button ToolTip="Cut" Content="{StaticResource cutIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding CutSelectedText}" />
                 <Button ToolTip="Copy" Content="{StaticResource copyIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding CopySelectedText}" />
@@ -124,6 +134,15 @@
                                 Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedTextDP="{Binding Path=SelectedText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectionStartDP="{Binding Path=TextSelectionStart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                SelectionLengthDP="{Binding Path=TextSelectionLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                SelectionLengthDP="{Binding Path=TextSelectionLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+            <local:SelectionTextBox.InputBindings>
+                <KeyBinding Key="Y" Modifiers="Ctrl" Command="ApplicationCommands.NotACommand" /> 
+                <KeyBinding Key="Z" Modifiers="Ctrl" Command="ApplicationCommands.NotACommand" />
+                <KeyBinding Key="X" Modifiers="Ctrl" Command="ApplicationCommands.NotACommand" />
+                <KeyBinding Key="C" Modifiers="Ctrl" Command="ApplicationCommands.NotACommand" />
+                <KeyBinding Key="V" Modifiers="Ctrl" Command="ApplicationCommands.NotACommand" />
+                <KeyBinding Key="Delete" Command="ApplicationCommands.NotACommand" />
+            </local:SelectionTextBox.InputBindings>
+        </local:SelectionTextBox>
     </DockPanel>
 </Window>

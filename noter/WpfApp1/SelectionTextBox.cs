@@ -99,6 +99,7 @@ namespace Noter
             SelectionStartDP = SelectionStart;
             SelectionLengthDP = SelectionLength;
         }
+        
 
     }
 }
