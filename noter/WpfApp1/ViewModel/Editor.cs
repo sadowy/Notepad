@@ -34,6 +34,8 @@ namespace Noter.ViewModel
                 undoStack.Push(text.Clone());
                 text.Words = value;
                 OnPropertyChanged(nameof(Text));
+                TextSaved = false;
+                OnPropertyChanged(nameof(TextSaved));
             }
         }
 
@@ -53,6 +55,8 @@ namespace Noter.ViewModel
                             OnPropertyChanged(nameof(Text));
                             FilePath = null;
                             OnPropertyChanged(nameof(FilePath));
+                            TextSaved = false;
+                            OnPropertyChanged(nameof(TextSaved));
                         }, (object param) =>
                         {
                             return Text.Length != 0;
@@ -81,6 +85,8 @@ namespace Noter.ViewModel
 
                                 FilePath = filePath;
                                 OnPropertyChanged(nameof(FilePath));
+                                TextSaved = true;
+                                OnPropertyChanged(nameof(TextSaved));
                             }
                             catch (Exception ex)
                             {
@@ -111,6 +117,8 @@ namespace Noter.ViewModel
                                 redoStack.Clear();
                                 undoStack.Clear();
                                 OnPropertyChanged(nameof(FilePath));
+                                TextSaved = true;
+                                OnPropertyChanged(nameof(TextSaved));
                             }catch(Exception ex)
                             {
                                 throw new Exception("Error saving to file", ex);
@@ -330,6 +338,7 @@ namespace Noter.ViewModel
         private Stack<Text> undoStack = new Stack<Text>();
         #endregion
         #region Status
+        public bool TextSaved { get; set; } = true;
         public int CurrentLine
         {
             get
@@ -364,7 +373,6 @@ namespace Noter.ViewModel
             }
         }
 
-        private int currentLine;
         #endregion
     }
 }

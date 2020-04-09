@@ -43,6 +43,8 @@
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
         <local:CurrentLineToString x:Key="currentLineToStringConverter" />
         <local:CurrentCharToString x:Key="currentCharToStringConverter" />
+        <local:BoleanToSavedStatusConverter x:Key="boleanToSavedStatusConverter" />
+        <local:BoleaToSavedStatusColorConverter x:Key="boleaToSavedStatusColorConverter" />
     </Window.Resources>
     <DockPanel FocusManager.FocusedElement="{Binding ElementName=textBox}" DataContext="{StaticResource viewModel}">
         <DockPanel.InputBindings>
@@ -70,9 +72,12 @@
                 <MenuItem Header="_Save" InputGestureText="Ctrl+S" Icon="{StaticResource saveIcon}" Command="{Binding SaveTextToFile}"/>
                 <MenuItem Header="Save as..." Icon="{StaticResource saveIcon}" Command="{Binding ElementName=saveFileDialog, Path=Show}"/>
                 <Separator />
+                <MenuItem Header="_Recent files" />
+                <Separator />
                 <MenuItem Header="_Print..." InputGestureText="Ctrl+P" Icon="{StaticResource printIcon}"/>
                 <Separator />
                 <MenuItem Header="_Exit" InputGestureText="Alt+F4" Icon="{StaticResource quitIcon}"/>
+                
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Header="_Undo" InputGestureText="Ctrl+Z" Icon="{StaticResource undoIcon}" Command="{Binding Undo}"/>
@@ -130,6 +135,7 @@
                             <ColumnDefinition Width="0.8*" />
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
                     </Grid>
                 </ItemsPanelTemplate>
@@ -139,12 +145,23 @@
                            Text="{Binding Path=FilePath, Mode=OneWay}"/>
             </StatusBarItem>
             <StatusBarItem HorizontalContentAlignment="Right"  Grid.Column="1">
-                <TextBlock x:Name="sbCurrentLine" 
-                           Text="{Binding Path=CurrentLine, Mode=OneWay, Converter={StaticResource currentLineToStringConverter}}"/>
+                <TextBlock x:Name="sbStatus" 
+                           Text="{Binding TextSaved, 
+                                        Mode=OneWay, 
+                                        Converter={StaticResource boleanToSavedStatusConverter}}"
+                           Foreground="{Binding TextSaved, Mode=OneWay, Converter={StaticResource boleaToSavedStatusColorConverter}}"/>
             </StatusBarItem>
             <StatusBarItem HorizontalContentAlignment="Right"  Grid.Column="2">
+                <TextBlock x:Name="sbCurrentLine" 
+                           Text="{Binding Path=CurrentLine, 
+                                        Mode=OneWay, 
+                                        Converter={StaticResource currentLineToStringConverter}}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalContentAlignment="Right"  Grid.Column="3">
                 <TextBlock x:Name="sbCurrentChar" 
-                           Text="{Binding Path=CurrentChar, Mode=OneWay, Converter={StaticResource currentCharToStringConverter}}"/>
+                           Text="{Binding Path=CurrentChar, 
+                                        Mode=OneWay, 
+                                        Converter={StaticResource currentCharToStringConverter}}"/>
             </StatusBarItem>
             
         </StatusBar>
