@@ -50,5 +50,19 @@ namespace Noter.Model
         {
             return string.Concat<string>(Paragraphs);
         }
+        public string getString()
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (var paragraph in Paragraphs)
+            {
+                if (paragraph.EndsWith("\r"))
+                {
+                    builder.Append(paragraph + "\n");
+                    continue;
+                }
+                builder.Append(paragraph);
+            }
+            return builder.ToString();
+        }
     }
 }

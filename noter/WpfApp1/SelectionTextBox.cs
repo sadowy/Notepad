@@ -88,6 +88,7 @@ namespace Noter
             }
         }
         #endregion
+
         public SelectionTextBox() : base()
         {
             this.SelectionChanged += selectionTextBoxSelectionChanged;

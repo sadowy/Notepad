@@ -41,6 +41,7 @@
         <vm:Editor x:Key="viewModel" />
         <local:BooleanToTexWrappingConverter x:Key="booleanToTextWrappingConverter" />
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+        <local:CurrentLineToString x:Key="currentLineToStringConverter" />
     </Window.Resources>
     <DockPanel FocusManager.FocusedElement="{Binding ElementName=textBox}" DataContext="{StaticResource viewModel}">
         <DockPanel.InputBindings>
@@ -49,8 +50,6 @@
             <KeyBinding Key="X" Modifiers="Ctrl" Command="{Binding CutSelectedText}" />
             <KeyBinding Key="C" Modifiers="Ctrl" Command="{Binding CopySelectedText}" />
             <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteTextFromClipboard}" />
-            <KeyBinding Key="Delete" Command="{Binding DeleteSelectedText}" />
-            <KeyBinding Key="Delete" Command="{Binding DeleteSelectedText}" />
             <KeyBinding Key="Delete" Command="{Binding DeleteSelectedText}" />
         </DockPanel.InputBindings>
         <local:OpenFileDialog x:Name="openFileDialog" 
@@ -102,7 +101,7 @@
                 <Button ToolTip="Open" Content="{StaticResource openIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding ElementName=openFileDialog, Path=Show}"/>
                 <Button ToolTip="Save" Content="{StaticResource saveIcon}" ToolBar.OverflowMode="AsNeeded" Command="{Binding ElementName=saveFileDialog, Path=Show}"/>
                 <Separator />
-                <Button ToolTip="Print" Content="{StaticResource printIcon}" ToolBar.OverflowMode="AsNeeded" />
+                <Button ToolTip="Print" Content="{StaticResource printIcon}" ToolBar.OverflowMode="AsNeeded" Margin="0,0,0,-0.4" VerticalAlignment="Top" />
             </ToolBar>
             <ToolBar>
                 <Button ToolTip="Undo" Content="{StaticResource undoIcon}" ToolBar.OverflowMode="Never" />
@@ -119,11 +118,28 @@
             </ToolBar>
         </ToolBarTray>
         <StatusBar DockPanel.Dock="Bottom"
-                   x:Name="statusBar">
-            <StatusBarItem>
-                <TextBlock x:Name="statusBarText" 
-                           Text="{Binding Path=FilePath, Mode=OneWay}"
-                           Visibility="{Binding ElementName=menuStatusBarVisibility, Path=IsChecked, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                   x:Name="statusBar"
+                   Visibility="{Binding ElementName=menuStatusBarVisibility, 
+                                            Path=IsChecked, 
+                                            Converter={StaticResource booleanToVisibilityConverter}}">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="0.2*" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0">
+                <TextBlock x:Name="sbFilePath" 
+                           Text="{Binding Path=FilePath, Mode=OneWay}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalContentAlignment="Right"  Grid.Column="1">
+                <TextBlock x:Name="sbCursorPosition" 
+                           
+                           Text="{Binding Path=CurrentLine, Mode=OneWay, Converter={StaticResource currentLineToStringConverter}}"/>
             </StatusBarItem>
         </StatusBar>
         <local:SelectionTextBox x:Name="textBox" 

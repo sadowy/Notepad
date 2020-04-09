@@ -21,4 +21,17 @@ namespace Noter
             return (TextWrapping)value == TextWrapping.Wrap;
         }
     }
+    class CurrentLineToString : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int lineNr = (int)value;
+            return "Ln " + lineNr;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

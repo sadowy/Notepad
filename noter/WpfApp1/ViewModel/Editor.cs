@@ -26,16 +26,13 @@ namespace Noter.ViewModel
         {
             get
             {
-                StringBuilder result = new StringBuilder();
-                foreach (string paragraph in text.Paragraphs)
-                    result.Append(paragraph);
-                return result.ToString();
+                return text.getString();
             }
             set
             {
                 undoStack.Push(text.Clone());
-                text.Paragraphs = value.Split('\n');
-                OnPropertyChanged(Text);
+                text.Paragraphs = value.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                OnPropertyChanged(nameof(Text));
             }
         }
         private Text text = new Text();
@@ -130,7 +127,18 @@ namespace Noter.ViewModel
         private ICommand saveTextToFile;
         #endregion
         #region Editing
-        public int TextSelectionStart { get; set; }
+        public int TextSelectionStart 
+        {
+            get
+            {
+                return textSelectionStart;
+            }
+            set
+            {
+                textSelectionStart = value;
+                OnPropertyChanged(nameof(CurrentLine));
+            } 
+        }
         public int TextSelectionLength { get; set; }
         public string SelectedText { get; set; }
         
@@ -236,7 +244,8 @@ namespace Noter.ViewModel
                 return selectAll;
             }
         }
-
+        
+        private int textSelectionStart;
         private ICommand copySelectedText;
         private ICommand cutSelectedText;
         private ICommand deleteSelectedText;
@@ -314,6 +323,41 @@ namespace Noter.ViewModel
         private ICommand undo;
         private Stack<Text> redoStack = new Stack<Text>();
         private Stack<Text> undoStack = new Stack<Text>();
+        #endregion
+        #region Status
+        public int CurrentLine
+        {
+            get
+            {
+                if (text.Paragraphs.Length == 0)
+                    return 1;
+                currentLine = 0;
+                int charsCount = 0;
+                StringBuilder builder = new StringBuilder();
+                foreach (var paragraph in text.Paragraphs)
+                {
+                    ++currentLine;
+                    if (paragraph.EndsWith("\r"))
+                        ++charsCount;
+                    charsCount += paragraph.Length;
+                    if (textSelectionStart / charsCount < 1)
+                        return currentLine;
+                    if (((double)textSelectionStart / charsCount == 1) && (paragraph.EndsWith("\r")))
+                        return ++currentLine;
+                }
+                return currentLine;
+            }
+        }
+        public int CurrenColumn
+        {
+            get
+            {
+                return currentColumn;
+            }
+        }
+        private int currentColumn;
+        private int currentLine;
+
         #endregion
     }
 }
