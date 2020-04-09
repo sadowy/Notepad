@@ -8,6 +8,7 @@ namespace Noter.ViewModel
 {
     using Model;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Runtime.CompilerServices;
     using System.Windows;
     using System.Windows.Input;
@@ -137,6 +138,7 @@ namespace Noter.ViewModel
             {
                 textSelectionStart = value;
                 OnPropertyChanged(nameof(CurrentLine));
+                OnPropertyChanged(nameof(CurrentChar));
             } 
         }
         public int TextSelectionLength { get; set; }
@@ -331,33 +333,49 @@ namespace Noter.ViewModel
             {
                 if (text.Paragraphs.Length == 0)
                     return 1;
+
                 currentLine = 0;
                 int charsCount = 0;
-                StringBuilder builder = new StringBuilder();
+
                 foreach (var paragraph in text.Paragraphs)
                 {
                     ++currentLine;
                     if (paragraph.EndsWith("\r"))
                         ++charsCount;
                     charsCount += paragraph.Length;
+
                     if (textSelectionStart / charsCount < 1)
                         return currentLine;
+
                     if (((double)textSelectionStart / charsCount == 1) && (paragraph.EndsWith("\r")))
                         return ++currentLine;
                 }
                 return currentLine;
             }
         }
-        public int CurrenColumn
+        public int CurrentChar
         {
             get
             {
-                return currentColumn;
+                if (text.Paragraphs.Length < CurrentLine)
+                    return 1;
+
+                int lineCharCount = -1;
+                int lineNr = 0;
+                while(lineNr != CurrentLine - 1)
+                {
+                    var paragraph = text.Paragraphs[lineNr];
+                    if (paragraph.EndsWith("\r"))
+                        ++lineCharCount;
+                    lineCharCount += paragraph.Length;
+                    lineNr++;
+                }
+
+                return TextSelectionStart - lineCharCount;
             }
         }
-        private int currentColumn;
-        private int currentLine;
 
+        private int currentLine;
         #endregion
     }
 }

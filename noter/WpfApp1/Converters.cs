@@ -26,7 +26,20 @@ namespace Noter
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int lineNr = (int)value;
-            return "Ln " + lineNr;
+            return "Ln: " + lineNr;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    class CurrentCharToString : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int charNr = (int)value;
+            return "Ch: " + charNr;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
