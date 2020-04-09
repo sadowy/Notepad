@@ -8,61 +8,27 @@ namespace Noter.Model
 {
     class Text
     {
-        public string[] Paragraphs
-        {
-            get
-            {
-                return paragraphs.ToArray();
-            }
-            set
-            {
-                paragraphs.Clear();
-                paragraphs.AddRange(value);
-            }
-        }
-
-        private List<string> paragraphs = new List<string>();
+        public string Words { get; set; } = string.Empty;
 
         public void ReadFromFile(string filePath)
         {
-            string[] rows = System.IO.File.ReadAllLines(filePath);
-            paragraphs.Clear();
-            paragraphs.AddRange(rows);
+            Words = System.IO.File.ReadAllText(filePath);
         }
         public void SaveToFile(string filePath)
         {
-            System.IO.File.WriteAllLines(filePath, Paragraphs, Encoding.Default);
+            System.IO.File.WriteAllText(filePath, Words, Encoding.Default);
         }
         public void Clear()
         {
-            paragraphs.Clear();
+            Words = string.Empty;
         }
         public Text Clone()
         {
-            List<string> _paragraphs = new List<string>();
-            foreach (var paragraph in Paragraphs)
-            {
-                _paragraphs.Add(paragraph);
-            }
-            return new Text() { Paragraphs = _paragraphs.ToArray() };
+            return new Text() { Words = Words };
         }
         public override string ToString()
         {
-            return string.Concat<string>(Paragraphs);
-        }
-        public string getString()
-        {
-            StringBuilder builder = new StringBuilder();
-            foreach (var paragraph in Paragraphs)
-            {
-                if (paragraph.EndsWith("\r"))
-                {
-                    builder.Append(paragraph + "\n");
-                    continue;
-                }
-                builder.Append(paragraph);
-            }
-            return builder.ToString();
+            return Words;
         }
     }
 }

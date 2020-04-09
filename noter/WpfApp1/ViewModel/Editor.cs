@@ -27,15 +27,16 @@ namespace Noter.ViewModel
         {
             get
             {
-                return text.getString();
+                return text.Words;
             }
             set
             {
                 undoStack.Push(text.Clone());
-                text.Paragraphs = value.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                text.Words = value;
                 OnPropertyChanged(nameof(Text));
             }
         }
+
         private Text text = new Text();
         
         #region File handling
@@ -132,6 +133,8 @@ namespace Noter.ViewModel
         {
             get
             {
+                Debug.WriteLine("TextSelectionStart: " + textSelectionStart);
+                Debug.WriteLine("Total Text length: " + text.Words.Length);
                 return textSelectionStart;
             }
             set
@@ -331,24 +334,14 @@ namespace Noter.ViewModel
         {
             get
             {
-                if (text.Paragraphs.Length == 0)
+                int caretPosition = textSelectionStart;
+                int currentLine = 1;
+                if (text.Words.Length == 0)
                     return 1;
-
-                currentLine = 0;
-                int charsCount = 0;
-
-                foreach (var paragraph in text.Paragraphs)
+                for (int i = 0; i < caretPosition; i++)
                 {
-                    ++currentLine;
-                    if (paragraph.EndsWith("\r"))
-                        ++charsCount;
-                    charsCount += paragraph.Length;
-
-                    if (textSelectionStart / charsCount < 1)
-                        return currentLine;
-
-                    if (((double)textSelectionStart / charsCount == 1) && (paragraph.EndsWith("\r")))
-                        return ++currentLine;
+                    if (text.Words[i] == '\n')
+                        currentLine++;
                 }
                 return currentLine;
             }
@@ -357,21 +350,17 @@ namespace Noter.ViewModel
         {
             get
             {
-                if (text.Paragraphs.Length < CurrentLine)
+                int caretPosition = textSelectionStart;
+                int charCount = 1;
+                if (text.Words.Length == 0)
                     return 1;
-
-                int lineCharCount = -1;
-                int lineNr = 0;
-                while(lineNr != CurrentLine - 1)
+                for (int i = 0; i < caretPosition; i++)
                 {
-                    var paragraph = text.Paragraphs[lineNr];
-                    if (paragraph.EndsWith("\r"))
-                        ++lineCharCount;
-                    lineCharCount += paragraph.Length;
-                    lineNr++;
+                    if (text.Words[i] == '\n' || text.Words[i] == '\r')
+                        charCount = 0;
+                    charCount++;
                 }
-
-                return TextSelectionStart - lineCharCount;
+                return charCount;
             }
         }
 
