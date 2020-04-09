@@ -45,6 +45,7 @@
         <local:CurrentCharToString x:Key="currentCharToStringConverter" />
         <local:BoleanToSavedStatusConverter x:Key="boleanToSavedStatusConverter" />
         <local:BoleaToSavedStatusColorConverter x:Key="boleaToSavedStatusColorConverter" />
+        <local:FilePathStringToStatusBarTextConverter x:Key="filePathStringToStatusBarTextConverter" />
     </Window.Resources>
     <DockPanel FocusManager.FocusedElement="{Binding ElementName=textBox}" DataContext="{StaticResource viewModel}">
         <DockPanel.InputBindings>
@@ -142,7 +143,7 @@
             </StatusBar.ItemsPanel>
             <StatusBarItem Grid.Column="0">
                 <TextBlock x:Name="sbFilePath" 
-                           Text="{Binding Path=FilePath, Mode=OneWay}"/>
+                           Text="{Binding Path=FilePath, Mode=OneWay, Converter={StaticResource filePathStringToStatusBarTextConverter}}"/>
             </StatusBarItem>
             <StatusBarItem HorizontalContentAlignment="Right"  Grid.Column="1">
                 <TextBlock x:Name="sbStatus" 
